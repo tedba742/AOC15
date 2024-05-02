@@ -1,37 +1,29 @@
 #include <iostream>
 #include <vector>
-#include <array>
-struct House {
-    int houseNumber;
-    int amountOfPresents;
-    House(int houseNumber, int amountOfPresents) : houseNumber(houseNumber), amountOfPresents(amountOfPresents) {}
-};
 
-void deliverPresents(std::vector<House> houses, int i, long long target, int flag){
-    House newHouse(i, 0);
-    houses.push_back(newHouse);
-    for(auto& house : houses){
-        house.amountOfPresents += house.houseNumber * 10;
-        if(house.amountOfPresents >= target){
-            std::cout << house.houseNumber << std::endl;
-            flag = 1;
+int deliverPresents(int targetPresents) {
+    std::vector<int> presents(targetPresents / 10, 0);
+
+    for (int elfNumber = 1; elfNumber < targetPresents / 10; ++elfNumber) {
+        for (int houseNumber = elfNumber; houseNumber < targetPresents / 10; houseNumber += elfNumber) {
+            presents[houseNumber] += elfNumber * 10;
         }
     }
 
+    for (int houseNumber = 0; houseNumber < targetPresents / 10; ++houseNumber) {
+        if (presents[houseNumber] >= targetPresents) {
+            return houseNumber;
+        }
+    }
+
+    return -1;
 }
 
 int main() {
-    long long target = 34000000;
-    std::vector<House> houses;
-    int i = 1;
-    int flag = 0;
-    while (true) {
+    int targetPresents = 34000000;
 
-        deliverPresents(houses, i, target, flag);     
-        i++;
-        if(flag == 1){
-            break;
-        }
-    }
+    int lowestHouseNumber = deliverPresents(targetPresents);
+    std::cout << "Lowest house number to receive at least " << targetPresents << " presents: " << lowestHouseNumber << std::endl;
+
     return 0;
 }

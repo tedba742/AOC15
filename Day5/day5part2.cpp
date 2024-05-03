@@ -1,4 +1,3 @@
-/* Written for the C++14 compiler at "https://ideone.com/" */
 
 #include <iostream>
 #include <fstream>
@@ -8,7 +7,6 @@
 
 using namespace std;
 
-/* Prototypes */
 int checkForRepeatWithOneLetterBetween(string);
 int checkForPairOfLettersThatAppearsAtLeastTwiceWithoutOverlapping(string);
 
@@ -16,10 +14,8 @@ int main() {
     std::ifstream file("input.txt");
 
   string inputLine;
-  //ifstream myfile ("Day5_input");
 
   int nice = 0;
-  //while(getline(myfile, inputLine)) {
   while(getline(file, inputLine)) {
     if((checkForRepeatWithOneLetterBetween(inputLine) == 1) && (checkForPairOfLettersThatAppearsAtLeastTwiceWithoutOverlapping(inputLine) == 1)) {
       ++nice;
@@ -27,7 +23,6 @@ int main() {
   }
 
   cout << nice << endl;
-  //myfile.close();
   return 0;
 }
 

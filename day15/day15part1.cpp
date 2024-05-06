@@ -3,56 +3,60 @@
 #include <algorithm>
 
 struct Ingredient {
+    std::string name;
     int capacity;
     int durability;
     int flavor;
     int texture;
+    int calories;
 };
 
-int calculateCookieScore(const std::vector<Ingredient>& ingredients, const std::vector<int>& teaspoons) {
-    int capacity = 0, durability = 0, flavor = 0, texture = 0;
+int calculateScore(int tspSprinkles, int tspButterscotch, int tspChocolate, int tspCandy, const std::vector<Ingredient> &ingredients) {
+    int totalCapacity = std::max(0, ingredients[0].capacity * tspSprinkles +
+                                      ingredients[1].capacity * tspButterscotch +
+                                      ingredients[2].capacity * tspChocolate +
+                                      ingredients[3].capacity * tspCandy);
 
-    for (size_t i = 0; i < ingredients.size(); ++i) {
-        capacity += ingredients[i].capacity * teaspoons[i];
-        durability += ingredients[i].durability * teaspoons[i];
-        flavor += ingredients[i].flavor * teaspoons[i];
-        texture += ingredients[i].texture * teaspoons[i];
-    }
+    int totalDurability = std::max(0, ingredients[0].durability * tspSprinkles +
+                                         ingredients[1].durability * tspButterscotch +
+                                         ingredients[2].durability * tspChocolate +
+                                         ingredients[3].durability * tspCandy);
 
-    int total_score = std::max(0, capacity) * std::max(0, durability) * std::max(0, flavor) * std::max(0, texture);
+    int totalFlavor = std::max(0, ingredients[0].flavor * tspSprinkles +
+                                    ingredients[1].flavor * tspButterscotch +
+                                    ingredients[2].flavor * tspChocolate +
+                                    ingredients[3].flavor * tspCandy);
 
-    return total_score;
-}
+    int totalTexture = std::max(0, ingredients[0].texture * tspSprinkles +
+                                      ingredients[1].texture * tspButterscotch +
+                                      ingredients[2].texture * tspChocolate +
+                                      ingredients[3].texture * tspCandy);
 
-int findHighestCookieScore(const std::vector<Ingredient>& ingredients) {
-    int highest_score = 0;
-
-    std::vector<int> teaspoons(ingredients.size(), 0);
-    for (int i = 0; i <= 100; ++i) {
-        teaspoons[0] = i;
-        for (int j = 0; j <= 100 - i; ++j) {
-            teaspoons[1] = j;
-            for (int k = 0; k <= 100 - i - j; ++k) {
-                teaspoons[2] = k;
-                teaspoons[3] = 100 - i - j - k;
-
-                int score = calculateCookieScore(ingredients, teaspoons);
-                highest_score = std::max(highest_score, score);
-            }
-        }
-    }
-
-    return highest_score;
+    return totalCapacity * totalDurability * totalFlavor * totalTexture;
 }
 
 int main() {
     std::vector<Ingredient> ingredients = {
-        {-1, -2, 6, 3},
-        {2, 3, -2, -1}
+        {"Sprinkles", 2, 0, -2, 0, 3},
+        {"Butterscotch", 0, 5, -3, 0, 3},
+        {"Chocolate", 0, 0, 5, -1, 8},
+        {"Candy", 0, -1, 0, 5, 8}
     };
 
-    int highest_score = findHighestCookieScore(ingredients);
-    std::cout << "Total score of the highest-scoring cookie: " << highest_score << std::endl;
+    int maxScore = 0;
+
+    for (int tspSprinkles = 0; tspSprinkles <= 100; ++tspSprinkles) {
+        for (int tspButterscotch = 0; tspButterscotch <= 100 - tspSprinkles; ++tspButterscotch) {
+            for (int tspChocolate = 0; tspChocolate <= 100 - tspSprinkles - tspButterscotch; ++tspChocolate) {
+                int tspCandy = 100 - tspSprinkles - tspButterscotch - tspChocolate;
+
+                int score = calculateScore(tspSprinkles, tspButterscotch, tspChocolate, tspCandy, ingredients);
+                maxScore = std::max(maxScore, score);
+            }
+        }
+    }
+
+    std::cout << "Highest scoring cookie has score: " << maxScore << std::endl;
 
     return 0;
 }
